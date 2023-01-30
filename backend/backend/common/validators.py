@@ -3,7 +3,7 @@
 
 import re
 id_regex = re.compile('^[a-z]([-_a-z0-9]){3,63}$')
-file_type_regex = re.compile('^[\\.]([a-z]){1,7}')
+file_type_regex = re.compile('^[\\.]([a-zA-Z0-9]){1,12}')
 sagemaker_notebook_name_regex = re.compile('^[a-zA-Z0-9](-*[a-zA-Z0-9])*')
 
 def validate_id(name, value):
@@ -30,7 +30,7 @@ def validate_string_max_length(name, value, max_length):
 
 def validate_string_fileType(name, value):
     if not file_type_regex.fullmatch(value):
-        return (False, name + " is invalid. Must follow the regexp ^[\\.]([a-z]){1,7}")
+        return (False, name + " is invalid. Must follow the regexp ^[\\.]([a-zA-Z0-9]){1,12}")
     return (True, '')
 
 def validate(values):
