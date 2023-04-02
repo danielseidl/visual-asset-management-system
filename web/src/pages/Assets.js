@@ -4,22 +4,27 @@
  */
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchAllAssets, fetchDatabaseAssets } from "../services/APIService";
 import CreateUpdateAsset from "../components/createupdate/CreateUpdateAsset";
 import { AssetListDefinition } from "../components/list/list-definitions/AssetListDefinition";
 import ListPage from "./ListPage";
 
 export default function Assets() {
-  return (
-    <ListPage
-      singularName={"asset"}
-      singularNameTitleCase={"Asset"}
-      pluralName={"assets"}
-      pluralNameTitleCase={"Assets"}
-      listDefinition={AssetListDefinition}
-      CreateNewElement={CreateUpdateAsset}
-      fetchAllElements={fetchAllAssets}
-      fetchElements={fetchDatabaseAssets}
-    />
-  );
+    const navigate = useNavigate();
+
+    return (
+        <ListPage
+            singularName={"asset"}
+            singularNameTitleCase={"Asset"}
+            pluralName={"assets"}
+            pluralNameTitleCase={"Assets"}
+            onCreateCallback={() => {
+                navigate("/upload");
+            }}
+            listDefinition={AssetListDefinition}
+            fetchAllElements={fetchAllAssets}
+            fetchElements={fetchDatabaseAssets}
+        />
+    );
 }

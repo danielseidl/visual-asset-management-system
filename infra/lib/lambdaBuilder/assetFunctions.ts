@@ -8,11 +8,9 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as path from "path";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
-import * as lambdaPython from "@aws-cdk/aws-lambda-python-alpha"
 import { Duration } from "aws-cdk-lib";
-import { NagSuppressions } from "cdk-nag";
 import { suppressCdkNagErrorsByGrantReadWrite } from "../security";
-
+import * as sfn from "aws-cdk-lib/aws-stepfunctions";
 export function buildAssetService(
     scope: Construct,
     assetStorageTable: dynamodb.Table,
@@ -21,14 +19,14 @@ export function buildAssetService(
 ): lambda.Function {
     const name = "assetService";
     const assetService = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
             DATABASE_STORAGE_TABLE_NAME: databaseStorageTable.tableName,
-            ASSET_STORAGE_TABLE_NAME: assetStorageTable.tableName
+            ASSET_STORAGE_TABLE_NAME: assetStorageTable.tableName,
         },
     });
     assetStorageTable.grantReadWriteData(assetService);
@@ -48,10 +46,10 @@ export function buildUploadAssetFunction(
 ): lambda.Function {
     const name = "uploadAsset";
     const uploadAssetFunction = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
             DATABASE_STORAGE_TABLE_NAME: databaseStorageTable.tableName,
@@ -75,10 +73,10 @@ export function buildUploadAllAssetsFunction(
 ): lambda.Function {
     const name = "uploadAllAssets";
     const uploadAllAssetFunction = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
             DATABASE_STORAGE_TABLE_NAME: databaseStorageTable.tableName,
@@ -103,10 +101,10 @@ export function buildAssetMetadataFunction(
 ) {
     const name = "metadata";
     const assetMetadataFunction = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
             ASSET_STORAGE_TABLE_NAME: assetStorageTable.tableName,
@@ -126,13 +124,13 @@ export function buildAssetColumnsFunction(
 ) {
     const name = "assetColumns";
     const assetColumnsFunction = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
-            ASSET_STORAGE_TABLE_NAME: assetStorageTable.tableName
+            ASSET_STORAGE_TABLE_NAME: assetStorageTable.tableName,
         },
     });
     assetStorageBucket.grantRead(assetColumnsFunction);
@@ -149,10 +147,10 @@ export function buildDownloadAssetFunction(
 ) {
     const name = "downloadAsset";
     const downloadAssetFunction = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
             ASSET_STORAGE_TABLE_NAME: assetStorageTable.tableName,
@@ -173,10 +171,10 @@ export function buildRevertAssetFunction(
 ): lambda.Function {
     const name = "revertAsset";
     const revertAssetFunction = new lambda.DockerImageFunction(scope, name, {
-        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`),{
-            cmd: [`backend.handlers.assets.${name}.lambda_handler`], 
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.handlers.assets.${name}.lambda_handler`],
         }),
-        timeout: Duration.minutes(15), 
+        timeout: Duration.minutes(15),
         memorySize: 3008,
         environment: {
             DATABASE_STORAGE_TABLE_NAME: databaseStorageTable.tableName,
@@ -190,3 +188,26 @@ export function buildRevertAssetFunction(
     return revertAssetFunction;
 }
 
+export function buildUploadAssetWorkflowFunction(
+    scope: Construct,
+    uploadAssetWorkflowStateMachine: sfn.StateMachine
+): lambda.Function {
+    const name = "upload_asset_workflow";
+
+    //TODO: Need to send separpate PR for actual code.
+    //TODO: Currently only passing this as part of the infra change.
+    const uploadAssetWorkflowFunction = new lambda.DockerImageFunction(scope, name, {
+        code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, `../../../backend/`), {
+            cmd: [`backend.functions.assets.${name}.lambda_handler.lambda_handler`],
+        }),
+        timeout: Duration.minutes(15),
+        memorySize: 3008,
+        environment: {
+            UPLOAD_WORKFLOW_ARN: uploadAssetWorkflowStateMachine.stateMachineArn,
+        },
+    });
+    uploadAssetWorkflowStateMachine.grantStartExecution(uploadAssetWorkflowFunction);
+
+    suppressCdkNagErrorsByGrantReadWrite(scope);
+    return uploadAssetWorkflowFunction;
+}

@@ -3,8 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const cadFileFormats = [".step", ".dwg"];
-export const modelFileFormats = [".gltf", ".glb", ".obj", ".stl", ".unity3d"];
+export const cadFileFormats = [".step", ".dwg", ".sldasm", ".stp", ".fcstd", "3dm", "brep", ".ifc"];
+export const modelFileFormats = [
+    ".obj",
+    ".gltf",
+    ".glb",
+    ".stl",
+    ".3ds",
+    ".ply",
+    ".fbx",
+    ".dae",
+    ".wrl",
+    ".3mf",
+    ".off",
+    ".bim",
+    ".unity3d"
+];
 export const columnarFileFormats = [".rds", ".fcs", ".csv"];
 export const previewFileFormats = [".png", ".jpg", ".svg", ".gif"];
 export const archiveFileFormats = [".zip"];
@@ -14,12 +28,12 @@ export const archiveFileFormats = [".zip"];
 export const presentationFileFormats = [".html"];
 
 export const FILE_FORMATS = {
-  CAD: cadFileFormats,
-  PRINT: [],
-  VR: [],
-  MODEL: modelFileFormats,
-  COLUMNAR: columnarFileFormats,
-  PREVIEW: previewFileFormats,
-  ARCHIVE: archiveFileFormats,
-  PRESENTATION: presentationFileFormats
+    CAD: cadFileFormats,
+    PRINT: [],
+    VR: [],
+    MODEL: modelFileFormats,
+    COLUMNAR: columnarFileFormats,
+    PREVIEW: previewFileFormats,
+    ARCHIVE: archiveFileFormats,
+    PRESENTATION: presentationFileFormats,
 };
