@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const cadFileFormats = [".step", ".dwg", ".sldasm", ".stp", ".fcstd", "3dm", "brep", ".ifc"];
+export const cadFileFormats = [".step", ".dwg", ".sldasm", ".stp", ".fcstd", "3dm", "brep", ".ifc", ".jt"];
 export const modelFileFormats = [
     ".obj",
     ".gltf",
@@ -17,7 +17,8 @@ export const modelFileFormats = [
     ".3mf",
     ".off",
     ".bim",
-    ".unity3d"
+    ".unity3d",
+    ".json"
 ];
 export const columnarFileFormats = [".rds", ".fcs", ".csv"];
 export const previewFileFormats = [".png", ".jpg", ".svg", ".gif"];
